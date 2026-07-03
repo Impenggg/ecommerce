@@ -66,11 +66,12 @@ export default function AdminCreateProductPage() {
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Back link */}
       <div>
-        <Link href="/admin/products" passHref legacyBehavior>
-          <Button variant="ghost" className="flex items-center gap-1 text-slate-500 hover:text-slate-900 pl-0">
-            <ChevronLeft className="h-4 w-4" />
-            Back to Inventory
-          </Button>
+        <Link
+          href="/admin/products"
+          className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Back to Inventory
         </Link>
       </div>
 

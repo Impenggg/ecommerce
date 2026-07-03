@@ -106,11 +106,12 @@ export default function AdminProductsPage() {
           </p>
         </div>
         <div>
-          <Link href="/admin/products/create" passHref legacyBehavior>
-            <Button className="flex items-center gap-2 font-medium">
-              <Plus className="h-4 w-4" />
-              Add New Product
-            </Button>
+          <Link
+            href="/admin/products/create"
+            className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium bg-slate-900 text-white hover:bg-slate-800 h-9 px-4 py-2 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            Add New Product
           </Link>
         </div>
       </div>

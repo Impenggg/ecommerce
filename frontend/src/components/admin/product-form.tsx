@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import { Card, CardContent } from "../ui/card";
+import { useToast } from "../ui/toast";
 
 // Define Form Validation Schema with Zod
 const variantSchema = z.object({
@@ -39,10 +40,10 @@ const productSchema = z.object({
     .min(3, "Product title must be at least 3 characters")
     .max(255, "Product title cannot exceed 255 characters"),
   description: z.string().optional().or(z.literal("")),
-  category_id: z
-    .coerce
-    .number()
-    .min(1, "Please select a valid category"),
+  category_id: z.union([
+    z.literal("new"),
+    z.coerce.number().min(1, "Please select a valid category")
+  ]),
   variants: z
     .array(variantSchema)
     .min(1, "You must define at least one product variant"),
@@ -65,12 +66,17 @@ export function ProductForm({
   initialValues,
   submitLabel = "Create Product",
 }: ProductFormProps) {
+  const [isNewCategory, setIsNewCategory] = React.useState(false);
+  const [newCategoryName, setNewCategoryName] = React.useState("");
+  const { addToast } = useToast();
+
   const {
     register,
     control,
     handleSubmit,
     reset,
     formState: { errors },
+    watch,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema) as any,
     defaultValues: initialValues || {
@@ -89,6 +95,29 @@ export function ProductForm({
     },
   });
 
+  const categoryIdValue = watch("category_id");
+
+  React.useEffect(() => {
+    if (categoryIdValue === "new") {
+      setIsNewCategory(true);
+    } else {
+      setIsNewCategory(false);
+      setNewCategoryName("");
+    }
+  }, [categoryIdValue]);
+
+  // Show toast notification when validation errors occur
+  React.useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const errorMessages = Object.values(errors)
+        .map((err) => err?.message)
+        .filter(Boolean);
+      if (errorMessages.length > 0) {
+        addToast("error", `Validation error: ${errorMessages[0]}`);
+      }
+    }
+  }, [errors, addToast]);
+
   // Reset form when initial values load from async API
   React.useEffect(() => {
     if (initialValues) {
@@ -101,8 +130,20 @@ export function ProductForm({
     name: "variants",
   });
 
+  const handleFormSubmit = async (data: ProductFormValues) => {
+    // If new category is selected, validate and include the new category name
+    if (isNewCategory) {
+      if (!newCategoryName.trim()) {
+        addToast("error", "Please enter a category name");
+        return;
+      }
+      (data as any).new_category_name = newCategoryName.trim();
+    }
+    await onSubmit(data);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
       {/* Product Details Card */}
       <Card className="shadow-sm">
         <CardContent className="p-6 space-y-4">
@@ -146,7 +187,30 @@ export function ProductForm({
                     {category.name}
                   </option>
                 ))}
+                <option value="new" className="font-semibold text-blue-600 bg-blue-50">
+                  + Add New Category
+                </option>
               </Select>
+              {isNewCategory && (
+                <div className="mt-2">
+                  <label htmlFor="new_category_name" className="text-xs font-semibold text-slate-600">
+                    New Category Name
+                  </label>
+                  <Input
+                    id="new_category_name"
+                    placeholder="Enter new category name..."
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    className="mt-1"
+                    required={isNewCategory}
+                  />
+                  {newCategoryName.trim().length === 0 && (
+                    <span className="text-xs font-medium text-red-500 mt-1">
+                      Category name is required when adding a new category
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Variant;
 use Illuminate\Database\Eloquent\Collection;
@@ -37,10 +38,20 @@ class ProductService
     public function createProduct(array $data): Product
     {
         return DB::transaction(function () use ($data) {
+            // Handle new category creation if needed
+            $categoryId = $data['category_id'];
+            if ($categoryId === 'new') {
+                if (empty($data['new_category_name'])) {
+                    throw new \InvalidArgumentException('Category name is required when adding a new category.');
+                }
+                $category = Category::create(['name' => $data['new_category_name']]);
+                $categoryId = $category->id;
+            }
+
             $product = Product::create([
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
-                'category_id' => $data['category_id'],
+                'category_id' => $categoryId,
             ]);
 
             foreach ($data['variants'] as $variantData) {

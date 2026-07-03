@@ -9,6 +9,7 @@ import { apiService } from "../../../../../services/api";
 import { Category, Product } from "../../../../../types";
 import { ProductForm } from "../../../../../components/admin/product-form";
 import { Button } from "../../../../../components/ui/button";
+import { useToast } from "../../../../../components/ui/toast";
 
 export default function AdminEditProductPage() {
   const params = useParams();
@@ -21,6 +22,7 @@ export default function AdminEditProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
+  const { addToast } = useToast();
 
   useEffect(() => {
     async function loadData() {
@@ -65,6 +67,7 @@ export default function AdminEditProductPage() {
     setFieldErrors(null);
     try {
       await apiService.updateProduct(productId, values);
+      addToast("success", "Product updated successfully!");
       router.push("/admin/products");
     } catch (err: any) {
       console.error("Failed to update product", err);
@@ -74,9 +77,13 @@ export default function AdminEditProductPage() {
         Object.entries(err.errors).forEach(([, msgs]) => {
           if (Array.isArray(msgs)) msgs.forEach((m) => allMessages.push(m));
         });
-        setErrorMsg(allMessages.join(" ") || "Validation errors occurred.");
+        const errorMessage = allMessages.join(" ") || "Validation errors occurred.";
+        setErrorMsg(errorMessage);
+        addToast("error", errorMessage);
       } else {
-        setErrorMsg(err.message || "A network or server error occurred.");
+        const errorMessage = err.message || "A network or server error occurred.";
+        setErrorMsg(errorMessage);
+        addToast("error", errorMessage);
       }
     } finally {
       setIsSubmitting(false);

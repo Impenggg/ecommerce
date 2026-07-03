@@ -10,6 +10,7 @@ import { columns } from "../../../components/admin/inventory-table/columns";
 import { DataTable } from "../../../components/admin/inventory-table/data-table";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
+import { useToast } from "../../../components/ui/toast";
 
 export default function AdminProductsPage() {
   const [data, setData] = useState<InventoryItem[]>([]);
@@ -24,6 +25,7 @@ export default function AdminProductsPage() {
 
   const [deleteTarget, setDeleteTarget] = useState<{ id: number; title: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { addToast } = useToast();
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -78,9 +80,11 @@ export default function AdminProductsPage() {
     try {
       await apiService.deleteProduct(deleteTarget.id);
       setDeleteTarget(null);
+      addToast("success", "Product deleted successfully!");
       loadData();
     } catch (err) {
       console.error("Failed to delete product", err);
+      addToast("error", "Failed to delete product. Please try again.");
     } finally {
       setIsDeleting(false);
     }
@@ -94,48 +98,59 @@ export default function AdminProductsPage() {
     <div className="space-y-6">
       {/* Delete Confirmation Dialog */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border border-slate-100">
-            <button
-              onClick={() => setDeleteTarget(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <div className="flex flex-col items-center text-center gap-4">
-              <div className="p-4 bg-red-50 rounded-full">
-                <AlertTriangle className="h-8 w-8 text-red-500" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">Delete Product?</h3>
-                <p className="text-sm text-slate-500 mt-2">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setDeleteTarget(null)}
+        >
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900">Delete Product?</h3>
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="text-slate-400 hover:text-slate-700 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            {/* Body */}
+            <div className="p-6">
+              <div className="flex flex-col items-center text-center gap-4">
+                <div className="p-4 bg-red-50 rounded-full">
+                  <AlertTriangle className="h-8 w-8 text-red-500" />
+                </div>
+                <p className="text-sm text-slate-600">
                   Are you sure you want to delete{" "}
-                  <span className="font-semibold text-slate-800">&ldquo;{deleteTarget.title}&rdquo;</span>?{" "}
+                  <span className="font-semibold text-slate-900">&ldquo;{deleteTarget.title}&rdquo;</span>?{" "}
                   This will also remove all its variants. This action cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3 w-full mt-2">
-                <Button variant="outline" className="flex-1" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
-                  Cancel
-                </Button>
-                <Button
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white border-transparent"
-                  onClick={handleDeleteConfirm}
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? (
-                    <span className="flex items-center gap-2">
-                      <span className="h-4 w-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                      Deleting...
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Trash2 className="h-4 w-4" />
-                      Delete
-                    </span>
-                  )}
-                </Button>
-              </div>
+            </div>
+            {/* Footer */}
+            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+                Cancel
+              </Button>
+              <Button
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={handleDeleteConfirm}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-4 w-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Deleting...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Trash2 className="h-4 w-4" />
+                    Delete
+                  </span>
+                )}
+              </Button>
             </div>
           </div>
         </div>
@@ -151,7 +166,7 @@ export default function AdminProductsPage() {
         </div>
         <Link
           href="/admin/products/create"
-          className="inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold bg-gradient-to-br from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-200 h-10 px-5 py-2 transition-all"
+          className="inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium bg-gradient-to-br from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md h-9 px-4 py-2 transition-all"
         >
           <Plus className="h-4 w-4" />
           Add New Product

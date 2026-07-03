@@ -9,6 +9,7 @@ import { apiService } from "../../../../services/api";
 import { Category } from "../../../../types";
 import { ProductForm } from "../../../../components/admin/product-form";
 import { Button } from "../../../../components/ui/button";
+import { useToast } from "../../../../components/ui/toast";
 
 export default function AdminCreateProductPage() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function AdminCreateProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
+  const { addToast } = useToast();
 
   // Fetch Categories on mount
   useEffect(() => {
@@ -39,13 +41,14 @@ export default function AdminCreateProductPage() {
     try {
       await apiService.createProduct(values);
       // Success redirect
+      addToast("success", "Product created successfully!");
       router.push("/admin/products");
     } catch (err: any) {
       console.error("Failed to create product", err);
       // Format validation errors or general message from Laravel
       if (err.errors) {
         setFieldErrors(err.errors);
-        
+
         // Build a user-friendly error summary string
         const allMessages: string[] = [];
         Object.entries(err.errors).forEach(([field, msgs]) => {
@@ -53,9 +56,13 @@ export default function AdminCreateProductPage() {
             msgs.forEach((m) => allMessages.push(m));
           }
         });
-        setErrorMsg(allMessages.join(" ") || "Validation errors occurred on the server.");
+        const errorMessage = allMessages.join(" ") || "Validation errors occurred on the server.";
+        setErrorMsg(errorMessage);
+        addToast("error", errorMessage);
       } else {
-        setErrorMsg(err.message || "A network or server error occurred. Please try again.");
+        const errorMessage = err.message || "A network or server error occurred. Please try again.";
+        setErrorMsg(errorMessage);
+        addToast("error", errorMessage);
       }
     } finally {
       setIsSubmitting(false);

@@ -14,6 +14,7 @@ import { Card, CardContent } from "../ui/card";
 
 // Define Form Validation Schema with Zod
 const variantSchema = z.object({
+  id: z.number().optional(),
   sku: z
     .string()
     .min(3, "SKU must be at least 3 characters")
@@ -53,21 +54,26 @@ interface ProductFormProps {
   categories: Category[];
   onSubmit: (data: ProductFormValues) => Promise<void>;
   isSubmitting?: boolean;
+  initialValues?: ProductFormValues;
+  submitLabel?: string;
 }
 
 export function ProductForm({
   categories,
   onSubmit,
   isSubmitting = false,
+  initialValues,
+  submitLabel = "Create Product",
 }: ProductFormProps) {
   const {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema) as any,
-    defaultValues: {
+    defaultValues: initialValues || {
       title: "",
       description: "",
       category_id: undefined,
@@ -82,6 +88,13 @@ export function ProductForm({
       ],
     },
   });
+
+  // Reset form when initial values load from async API
+  React.useEffect(() => {
+    if (initialValues) {
+      reset(initialValues);
+    }
+  }, [initialValues, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -326,7 +339,7 @@ export function ProductForm({
               Saving...
             </>
           ) : (
-            "Create Product"
+            submitLabel
           )}
         </Button>
       </div>

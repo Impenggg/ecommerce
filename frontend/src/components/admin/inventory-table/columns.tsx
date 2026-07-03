@@ -1,12 +1,16 @@
+"use client";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { InventoryItem } from "../../../types";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
+import Link from "next/link";
 
 export const columns = (
   onSort: (field: string) => void,
   sortField: string,
-  sortOrder: "asc" | "desc"
+  sortOrder: "asc" | "desc",
+  onDelete?: (id: number, title: string) => void
 ): ColumnDef<InventoryItem>[] => [
   {
     accessorKey: "title",
@@ -24,7 +28,7 @@ export const columns = (
       );
     },
     cell: ({ row }) => (
-      <span className="font-medium text-slate-900">{row.getValue("title")}</span>
+      <span className="font-semibold text-slate-900">{row.getValue("title")}</span>
     ),
   },
   {
@@ -74,6 +78,38 @@ export const columns = (
         day: "numeric",
       });
       return <span className="text-slate-500 text-sm">{formattedDate}</span>;
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const item = row.original;
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/admin/products/${item.id}/edit`}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 px-2.5 gap-1.5 text-slate-600 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+              title="Edit product"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Edit
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-2.5 gap-1.5 text-slate-600 hover:text-red-600 hover:border-red-300 hover:bg-red-50 transition-colors"
+            title="Delete product"
+            onClick={() => onDelete?.(item.id, item.title)}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Delete
+          </Button>
+        </div>
+      );
     },
   },
 ];

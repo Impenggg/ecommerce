@@ -5,13 +5,14 @@ import { ProductCard } from "./product-card";
 interface ProductGridProps {
   products: Product[];
   isLoading: boolean;
+  onProductClick?: (product: Product) => void;
 }
 
-export function ProductGrid({ products, isLoading }: ProductGridProps) {
+export function ProductGrid({ products, isLoading, onProductClick }: ProductGridProps) {
   if (isLoading) {
     return (
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, index) => (
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={index}
             className="rounded-xl border border-slate-200 bg-white h-[380px] animate-pulse flex flex-col overflow-hidden"
@@ -56,16 +57,16 @@ export function ProductGrid({ products, isLoading }: ProductGridProps) {
         </svg>
         <h3 className="text-lg font-bold text-slate-800">No products found</h3>
         <p className="text-sm text-slate-500 max-w-sm mt-1">
-          We couldn't find any products matching your filters. Try clearing some filters or exploring other categories.
+          We couldn&apos;t find any products matching your filters. Try clearing some filters or exploring other categories.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard key={product.id} product={product} onClick={onProductClick} />
       ))}
     </div>
   );

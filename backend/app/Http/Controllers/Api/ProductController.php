@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
@@ -97,6 +98,35 @@ class ProductController extends Controller
 
         return response()->json([
             'data' => $colors
+        ]);
+    }
+
+    /**
+     * Display the specified product.
+     */
+    public function show(int $id): ProductResource
+    {
+        $product = $this->productService->getProductById($id);
+        return new ProductResource($product);
+    }
+
+    /**
+     * Update the specified product in storage.
+     */
+    public function update(UpdateProductRequest $request, int $id): ProductResource
+    {
+        $product = $this->productService->updateProduct($id, $request->validated());
+        return new ProductResource($product);
+    }
+
+    /**
+     * Remove the specified product from storage.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $this->productService->deleteProduct($id);
+        return response()->json([
+            'message' => 'Product deleted successfully.'
         ]);
     }
 }

@@ -9,23 +9,25 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       {/* Header Navigation */}
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur shadow-sm">
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/admin/products" className="flex items-center gap-2 font-bold text-xl text-slate-900">
-              <span className="bg-blue-600 text-white rounded p-1 text-xs">APP</span>
+              <span className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-lg p-1.5 text-xs font-black tracking-wide">
+                APP
+              </span>
               <span>Solutions Admin</span>
             </Link>
-            <nav className="hidden md:flex items-center gap-6">
+            <nav className="hidden md:flex items-center gap-1">
               <Link
                 href="/admin/products"
-                className="text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
+                className="text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-all"
               >
-                Inventory Table
+                Inventory
               </Link>
               <Link
                 href="/admin/products/create"
-                className="text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
+                className="text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-all"
               >
                 Create Product
               </Link>
@@ -34,18 +36,19 @@ export default function AdminLayout({
           <div>
             <Link
               href="/shop"
-              className="text-sm font-medium text-blue-600 hover:text-blue-500 hover:underline transition-all flex items-center gap-1"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 border border-blue-100 hover:border-blue-300 bg-blue-50 hover:bg-blue-100 px-4 py-1.5 rounded-lg transition-all"
             >
-              Go to Public Shop &rarr;
+              View Shop →
             </Link>
           </div>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-[1600px] w-full mx-auto px-6 sm:px-8 lg:px-12 py-8">
         {children}
       </main>
     </div>
   );
 }
+

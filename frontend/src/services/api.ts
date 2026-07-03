@@ -107,4 +107,30 @@ export const apiService = {
       body: JSON.stringify(data),
     });
   },
+
+  /**
+   * Fetch a single product by ID
+   */
+  getProduct: async (id: number | string): Promise<{ data: Product }> => {
+    return apiFetch<{ data: Product }>(`/products/${id}`);
+  },
+
+  /**
+   * Update a product by ID
+   */
+  updateProduct: async (id: number | string, data: any): Promise<{ data: Product }> => {
+    return apiFetch<{ data: Product }>(`/products/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Delete a product by ID
+   */
+  deleteProduct: async (id: number | string): Promise<void> => {
+    return apiFetch<void>(`/products/${id}`, {
+      method: 'DELETE',
+    });
+  },
 };

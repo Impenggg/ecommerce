@@ -77,4 +77,56 @@ class ProductService
 
         return $query->paginate($filters['per_page'] ?? 10);
     }
+
+    /**
+     * Get a single product by ID with category and variants.
+     */
+    public function getProductById(int $id): Product
+    {
+        return Product::with(['category', 'variants'])->findOrFail($id);
+    }
+
+    /**
+     * Update product and synchronize its variants atomically.
+     */
+    public function updateProduct(int $id, array $data): Product
+    {
+        return DB::transaction(function () use ($id, $data) {
+            $product = Product::findOrFail($id);
+            $product->update([
+                'title' => $data['title'],
+                'description' => $data['description'] ?? null,
+                'category_id' => $data['category_id'],
+            ]);
+
+            $processedVariantIds = [];
+
+            foreach ($data['variants'] as $variantData) {
+                if (!empty($variantData['id'])) {
+                    // Update existing variant
+                    $variant = $product->variants()->findOrFail($variantData['id']);
+                    $variant->update($variantData);
+                    $processedVariantIds[] = $variant->id;
+                } else {
+                    // Create new variant
+                    $variant = $product->variants()->create($variantData);
+                    $processedVariantIds[] = $variant->id;
+                }
+            }
+
+            // Delete variants that were NOT sent in the payload (sync behavior)
+            $product->variants()->whereNotIn('id', $processedVariantIds)->delete();
+
+            return $product->load(['category', 'variants']);
+        });
+    }
+
+    /**
+     * Delete product.
+     */
+    public function deleteProduct(int $id): void
+    {
+        $product = Product::findOrFail($id);
+        $product->delete();
+    }
 }

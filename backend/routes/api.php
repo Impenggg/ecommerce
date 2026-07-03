@@ -8,4 +8,7 @@ Route::post('/products', [ProductController::class, 'store']);
 Route::get('/products/inventory', [ProductController::class, 'inventory']);
 Route::get('/categories', [ProductController::class, 'categories']);
 Route::get('/colors', [ProductController::class, 'colors']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
+Route::put('/products/{id}', [ProductController::class, 'update']);
+Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 

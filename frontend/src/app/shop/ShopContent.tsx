@@ -279,12 +279,8 @@ export function ShopContent({ categories, colors, products }: ShopContentProps) 
               <span className="text-xs text-slate-500">
                 {selectedProduct.variants?.length || 0} variant{(selectedProduct.variants?.length || 0) !== 1 ? "s" : ""} available
               </span>
-              <button
-                onClick={() => setSelectedProduct(null)}
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-sm font-medium px-4 py-2 transition-colors"
-              >
-                Close
-              </button>
+              {/* Footer close intentionally removed to keep a single, consistent close control (modal header X) */}
+              <div className="h-10" />
             </div>
           </div>
         </div>

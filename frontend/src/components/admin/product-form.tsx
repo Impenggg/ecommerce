@@ -66,7 +66,7 @@ export function ProductForm({
     handleSubmit,
     formState: { errors },
   } = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(productSchema) as any,
     defaultValues: {
       title: "",
       description: "",

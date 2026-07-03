@@ -158,15 +158,15 @@ export default function AdminProductsPage() {
 
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Inventory Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-1">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Inventory Dashboard</h1>
+          <p className="text-base text-slate-600">
             Manage your catalog products, view SKU summaries, and monitor stock levels.
           </p>
         </div>
         <Link
           href="/admin/products/create"
-          className="inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium bg-gradient-to-br from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md h-9 px-4 py-2 transition-all"
+          className="inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium bg-gradient-to-br from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md h-10 px-5 py-2 transition-all"
         >
           <Plus className="h-4 w-4" />
           Add New Product

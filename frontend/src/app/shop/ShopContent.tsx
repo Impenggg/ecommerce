@@ -106,24 +106,22 @@ export function ShopContent({ categories, colors, products }: ShopContentProps) 
       </section>
 
       {/* ── Main Layout ── */}
-      <div className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex-1 max-w-[1600px] w-full mx-auto px-6 sm:px-8 lg:px-12 py-8">
+        <div className="flex flex-col md:flex-row gap-8">
           {/* Filters Sidebar */}
-          <aside className="lg:w-64 flex-shrink-0">
-            <FilterSidebar
-              categories={categories}
-              colors={colors}
-              selectedCategory={categoryIdParam}
-              selectedColor={colorParam}
-              onSelectCategory={(id) => handleFilterChange("category_id", id)}
-              onSelectColor={(color) => handleFilterChange("color", color)}
-              onClear={handleClearFilters}
-            />
-          </aside>
+          <FilterSidebar
+            categories={categories}
+            colors={colors}
+            selectedCategory={categoryIdParam}
+            selectedColor={colorParam}
+            onSelectCategory={(id) => handleFilterChange("category_id", id)}
+            onSelectColor={(color) => handleFilterChange("color", color)}
+            onClear={handleClearFilters}
+          />
 
           {/* Catalog grid */}
-          <div className="flex-1 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm text-slate-500 border-b border-slate-200 pb-4">
+          <div className="flex-1 space-y-5">
+            <div className="flex justify-between items-center text-sm text-slate-500 border-b pb-4">
               <div>
                 Showing{" "}
                 <span className="font-semibold text-slate-800">{products.length}</span>{" "}

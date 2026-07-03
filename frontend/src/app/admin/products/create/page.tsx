@@ -70,45 +70,50 @@ export default function AdminCreateProductPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Back link */}
-      <div>
+    <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm">
         <Link
           href="/admin/products"
-          className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+          className="text-slate-500 hover:text-slate-900 transition-colors flex items-center gap-1"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back to Inventory
+          Inventory
         </Link>
-      </div>
+        <span className="text-slate-300">/</span>
+        <span className="text-slate-900 font-medium">Create Product</span>
+      </nav>
 
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
           Create Product
         </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Add a new product along with all its variant parameters to your catalog.
+        <p className="text-base text-slate-600">
+          Add a new product to your catalog with variants, pricing, and inventory details.
         </p>
       </div>
 
       {/* Backend/General Errors Alert */}
       {errorMsg && (
-        <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-red-700 shadow-sm">
           <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
-          <div className="text-sm">
-            <h4 className="font-bold text-red-950">An error occurred</h4>
-            <p className="mt-1">{errorMsg}</p>
-            
+          <div className="flex-1">
+            <h4 className="font-bold text-red-950 text-sm">Unable to create product</h4>
+            <p className="mt-1 text-sm">{errorMsg}</p>
+
             {/* Detailed fields errors from backend validation if any */}
             {fieldErrors && Object.keys(fieldErrors).length > 0 && (
-              <ul className="mt-2 list-disc list-inside text-xs space-y-0.5 text-red-900">
-                {Object.entries(fieldErrors).map(([field, msgs]) => (
-                  <li key={field}>
-                    <strong>{field.replace(/\./g, ' -> ')}:</strong> {msgs.join(', ')}
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-3 p-3 bg-red-100/50 rounded-lg">
+                <p className="text-xs font-semibold text-red-900 mb-2">Validation errors:</p>
+                <ul className="mt-2 list-disc list-inside text-xs space-y-1 text-red-800">
+                  {Object.entries(fieldErrors).map(([field, msgs]) => (
+                    <li key={field}>
+                      <strong>{field.replace(/\./g, ' → ')}:</strong> {msgs.join(', ')}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </div>
         </div>

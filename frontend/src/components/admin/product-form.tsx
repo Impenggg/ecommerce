@@ -145,23 +145,24 @@ export function ProductForm({
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
       {/* Product Details Card */}
-      <Card className="shadow-sm">
-        <CardContent className="p-6 space-y-4">
-          <h2 className="text-xl font-bold text-slate-900 border-b pb-2 mb-4">
-            Product Details
-          </h2>
+      <Card className="shadow-sm border-slate-200">
+        <CardContent className="p-8 space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">Product Details</h2>
+            <p className="text-sm text-slate-500 mt-1">Basic information about your product</p>
+          </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {/* Title */}
-            <div className="flex flex-col space-y-1.5">
+            <div className="flex flex-col space-y-2">
               <label htmlFor="title" className="text-sm font-semibold text-slate-700">
-                Product Title
+                Product Title <span className="text-red-500">*</span>
               </label>
               <Input
                 id="title"
                 placeholder="e.g., Wireless Gaming Headset"
                 {...register("title")}
-                className={errors.title ? "border-red-500" : ""}
+                error={!!errors.title}
               />
               {errors.title && (
                 <span className="text-xs font-medium text-red-500">
@@ -171,10 +172,12 @@ export function ProductForm({
             </div>
 
             {/* Category Select */}
-            <div className="flex flex-col space-y-1.5">
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="category_id" className="text-sm font-semibold text-slate-700">
+                Category <span className="text-red-500">*</span>
+              </label>
               <Select
                 id="category_id"
-                label="Category"
                 {...register("category_id")}
                 error={errors.category_id?.message}
                 defaultValue=""
@@ -192,20 +195,20 @@ export function ProductForm({
                 </option>
               </Select>
               {isNewCategory && (
-                <div className="mt-2">
-                  <label htmlFor="new_category_name" className="text-xs font-semibold text-slate-600">
-                    New Category Name
+                <div className="mt-2 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                  <label htmlFor="new_category_name" className="text-xs font-semibold text-slate-700 block mb-2">
+                    New Category Name <span className="text-red-500">*</span>
                   </label>
                   <Input
                     id="new_category_name"
                     placeholder="Enter new category name..."
                     value={newCategoryName}
                     onChange={(e) => setNewCategoryName(e.target.value)}
-                    className="mt-1"
+                    className="bg-white"
                     required={isNewCategory}
                   />
                   {newCategoryName.trim().length === 0 && (
-                    <span className="text-xs font-medium text-red-500 mt-1">
+                    <span className="text-xs font-medium text-red-500 mt-2 block">
                       Category name is required when adding a new category
                     </span>
                   )}
@@ -215,7 +218,7 @@ export function ProductForm({
           </div>
 
           {/* Description */}
-          <div className="flex flex-col space-y-1.5 mt-4">
+          <div className="flex flex-col space-y-2">
             <label htmlFor="description" className="text-sm font-semibold text-slate-700">
               Description
             </label>
@@ -224,7 +227,7 @@ export function ProductForm({
               rows={4}
               placeholder="Provide a detailed description of the product..."
               {...register("description")}
-              className="flex w-full rounded-md border border-slate-200 bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex w-full rounded-lg border border-slate-200 bg-transparent px-4 py-3 text-sm shadow-sm transition-colors placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
             />
             {errors.description && (
               <span className="text-xs font-medium text-red-500">
@@ -236,12 +239,13 @@ export function ProductForm({
       </Card>
 
       {/* Product Variants Card */}
-      <Card className="shadow-sm">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between border-b pb-2 mb-4">
-            <h2 className="text-xl font-bold text-slate-900">
-              Product Variants
-            </h2>
+      <Card className="shadow-sm border-slate-200">
+        <CardContent className="p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Product Variants</h2>
+              <p className="text-sm text-slate-500 mt-1">Define different sizes, colors, and pricing options</p>
+            </div>
             <Button
               type="button"
               variant="outline"
@@ -255,7 +259,7 @@ export function ProductForm({
                   stock_quantity: 0,
                 })
               }
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Add Variant
@@ -263,7 +267,7 @@ export function ProductForm({
           </div>
 
           {errors.variants?.root && (
-            <div className="mb-4 text-sm font-medium text-red-500 bg-red-50 p-2.5 rounded border border-red-200">
+            <div className="mb-6 text-sm font-medium text-red-600 bg-red-50 p-4 rounded-lg border border-red-200">
               {errors.variants.root.message}
             </div>
           )}
@@ -276,92 +280,97 @@ export function ProductForm({
               return (
                 <div
                   key={field.id}
-                  className="grid gap-3 items-end border border-slate-100 rounded-lg p-4 bg-slate-50/50 hover:bg-slate-50 transition-colors md:grid-cols-6"
+                  className="grid gap-4 items-start border border-slate-200 rounded-xl p-5 bg-slate-50/50 hover:bg-slate-50 transition-colors md:grid-cols-6"
                 >
                   {/* SKU */}
-                  <div className="flex flex-col space-y-1 md:col-span-2">
+                  <div className="flex flex-col space-y-2 md:col-span-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-                      SKU
+                      SKU <span className="text-red-500">*</span>
                     </label>
                     <Input
                       placeholder="e.g. HEADSET-BLK"
                       {...register(`variants.${index}.sku` as const)}
-                      className={rowErrors?.sku ? "border-red-500 bg-white" : "bg-white"}
+                      className="bg-white"
+                      error={!!rowErrors?.sku}
                     />
                     {rowErrors?.sku && (
-                      <span className="text-xs font-medium text-red-500 mt-1">
+                      <span className="text-xs font-medium text-red-500">
                         {rowErrors.sku.message}
                       </span>
                     )}
                   </div>
 
                   {/* Size */}
-                  <div className="flex flex-col space-y-1">
+                  <div className="flex flex-col space-y-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
                       Size
                     </label>
                     <Input
                       placeholder="e.g. S, M, L"
                       {...register(`variants.${index}.size` as const)}
-                      className={rowErrors?.size ? "border-red-500 bg-white" : "bg-white"}
+                      className="bg-white"
+                      error={!!rowErrors?.size}
                     />
                     {rowErrors?.size && (
-                      <span className="text-xs font-medium text-red-500 mt-1">
+                      <span className="text-xs font-medium text-red-500">
                         {rowErrors.size.message}
                       </span>
                     )}
                   </div>
 
                   {/* Color */}
-                  <div className="flex flex-col space-y-1">
+                  <div className="flex flex-col space-y-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
                       Color
                     </label>
                     <Input
                       placeholder="e.g. Red, Blue"
                       {...register(`variants.${index}.color` as const)}
-                      className={rowErrors?.color ? "border-red-500 bg-white" : "bg-white"}
+                      className="bg-white"
+                      error={!!rowErrors?.color}
                     />
                     {rowErrors?.color && (
-                      <span className="text-xs font-medium text-red-500 mt-1">
+                      <span className="text-xs font-medium text-red-500">
                         {rowErrors.color.message}
                       </span>
                     )}
                   </div>
 
                   {/* Price */}
-                  <div className="flex flex-col space-y-1">
+                  <div className="flex flex-col space-y-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-                      Price ($)
+                      Price ($) <span className="text-red-500">*</span>
                     </label>
                     <Input
                       type="number"
                       step="0.01"
                       placeholder="0.00"
                       {...register(`variants.${index}.price` as const)}
-                      className={rowErrors?.price ? "border-red-500 bg-white" : "bg-white"}
+                      className="bg-white"
+                      error={!!rowErrors?.price}
                     />
                     {rowErrors?.price && (
-                      <span className="text-xs font-medium text-red-500 mt-1">
+                      <span className="text-xs font-medium text-red-500">
                         {rowErrors.price.message}
                       </span>
                     )}
                   </div>
 
                   {/* Stock & Delete */}
-                  <div className="flex items-center gap-2 md:col-span-1">
-                    <div className="flex flex-col space-y-1 flex-1">
+                  <div className="flex items-start gap-3 md:col-span-1">
+                    <div className="flex flex-col space-y-2 flex-1">
                       <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-                        Stock
+                        Stock <span className="text-red-500">*</span>
                       </label>
                       <Input
                         type="number"
                         placeholder="0"
                         {...register(`variants.${index}.stock_quantity` as const)}
-                        className={rowErrors?.stock_quantity ? "border-red-500 bg-white" : "bg-white"}
+                        className="bg-white"
+                        error={!!rowErrors?.stock_quantity}
                       />
                       {rowErrors?.stock_quantity && (
-                        <span className="text-xs font-medium text-red-500 mt-1">
+                        <span className="text-xs font-medium text-red-500">
                           {rowErrors.stock_quantity.message}
                         </span>
                       )}
@@ -373,7 +382,7 @@ export function ProductForm({
                       size="icon"
                       onClick={() => remove(index)}
                       disabled={fields.length <= 1}
-                      className="mb-0.5 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                      className="text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors mt-6"
                       title="Remove variant"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -387,16 +396,17 @@ export function ProductForm({
       </Card>
 
       {/* Form Submission Buttons */}
-      <div className="flex items-center justify-end gap-3">
+      <div className="flex items-center justify-end gap-3 pt-4">
         <Button
           type="button"
           variant="outline"
           disabled={isSubmitting}
           onClick={() => window.history.back()}
+          className="h-10 px-6"
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting} className="min-w-[120px]">
+        <Button type="submit" disabled={isSubmitting} className="h-10 px-6 min-w-[140px]">
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
